@@ -1,0 +1,12 @@
+# Manejo consistente de saltos de línea
+* text=auto eol=lf
+
+# Exclusiones para distribución de paquetes Composer (export-ignore)
+# Permite descargas ligeras vía Packagist omitiendo tests, docs y herramientas de CI
+/tests export-ignore
+/.github export-ignore
+/.documents export-ignore
+/documents export-ignore
+/phpunit.xml.dist export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
