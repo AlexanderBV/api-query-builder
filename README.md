@@ -3,6 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/warrior/api-query-builder.svg?style=flat-square)](https://packagist.org/packages/warrior/api-query-builder)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/AlexanderBV/api-query-builder/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/AlexanderBV/api-query-builder/actions)
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg?style=flat-square)](https://alexanderbv.github.io/api-query-builder-docs/)
+[![AI Skills](https://img.shields.io/badge/AI%20Skills-Cursor%20%7C%20Claude%20%7C%20Gemini-orange.svg?style=flat-square)](https://github.com/AlexanderBV/api-query-builder-skills)
 [![Total Downloads](https://img.shields.io/packagist/dt/warrior/api-query-builder.svg?style=flat-square)](https://packagist.org/packages/warrior/api-query-builder)
 [![PHP Version](https://img.shields.io/packagist/dependency-v/warrior/api-query-builder/php.svg?style=flat-square)](https://packagist.org/packages/warrior/api-query-builder)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE.md)
@@ -10,7 +11,9 @@
 Un constructor de consultas declarativo, fluido y de alto rendimiento para APIs en **Laravel 10, 11 y 12** sobre **Eloquent ORM**.
 
 > 📚 **Documentación Oficial y Guías Completas:**  
-> **[https://alexanderbv.github.io/api-query-builder-docs/](https://alexanderbv.github.io/api-query-builder-docs/)**
+> **[https://alexanderbv.github.io/api-query-builder-docs/](https://alexanderbv.github.io/api-query-builder-docs/)**  
+> 🤖 **Skills y Reglas para Agentes de IA (Cursor, Claude, Gemini, Antigravity):**  
+> **[https://github.com/AlexanderBV/api-query-builder-skills](https://github.com/AlexanderBV/api-query-builder-skills)**
 
 Diseñado para eliminar el código repetitivo en controladores CRUD y proporcionar una experiencia de desarrollo de primer nivel (**Developer Experience - DX First**), permitiendo que componentes de filtrado en el frontend (React, Vue, Inertia, Angular, Svelte) consulten datos mediante APIs limpias, predecibles y seguras.
 
