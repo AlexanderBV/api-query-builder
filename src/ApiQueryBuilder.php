@@ -52,8 +52,8 @@ final class ApiQueryBuilder
     /**
      * Inicializa una nueva instancia del procesador con la consulta y petición dadas.
      *
-     * @param Builder $builder Consulta Eloquent base (con restricciones de seguridad/tenencia preaplicadas)
-     * @param Request|null $request Petición HTTP actual (si se omite, se resuelve mediante helper request())
+     * @param  Builder  $builder  Consulta Eloquent base (con restricciones de seguridad/tenencia preaplicadas)
+     * @param  Request|null  $request  Petición HTTP actual (si se omite, se resuelve mediante helper request())
      */
     public function __construct(Builder $builder, ?Request $request = null)
     {
@@ -84,9 +84,9 @@ final class ApiQueryBuilder
      * - Una relación activa de Eloquent (ej: $user->posts())
      * - Un Builder de Eloquent existente (ej: User::where('company_id', $tenantId))
      *
-     * @param class-string<Model>|Builder|Relation $subject Origen de datos para la consulta
-     * @param Request|null $request Petición HTTP opcional
-     * @return self
+     * @param  class-string<Model>|Builder|Relation  $subject  Origen de datos para la consulta
+     * @param  Request|null  $request  Petición HTTP opcional
+     *
      * @throws InvalidArgumentException Si el argumento proporcionado no es compatible
      */
     public static function for(mixed $subject, ?Request $request = null): self
@@ -120,12 +120,12 @@ final class ApiQueryBuilder
      * - Comodines de relación ('roles.*') o campos JSON ('extra_data.*')
      * - Filtros personalizados creados mediante Filter::custom('alias', fn($q, $v) => ...)
      *
-     * @param array<int|string, string|CustomFilter> $filters
-     * @return self
+     * @param  array<int|string, string|CustomFilter>  $filters
      */
     public function allowedFilters(array $filters): self
     {
         $this->config->allowedFilters = $filters;
+
         return $this;
     }
 
@@ -136,12 +136,12 @@ final class ApiQueryBuilder
      * A diferencia de modificar el builder base directamente, los defaultFilters permiten que el frontend
      * sobrescriba o relaje el filtro explícitamente cuando sea necesario.
      *
-     * @param array<string, mixed> $defaults Mapa de campo => valor por defecto
-     * @return self
+     * @param  array<string, mixed>  $defaults  Mapa de campo => valor por defecto
      */
     public function defaultFilters(array $defaults): self
     {
         $this->config->defaultFilters = $defaults;
+
         return $this;
     }
 
@@ -151,12 +151,12 @@ final class ApiQueryBuilder
      * Previene estrictamente el problema de N+1 consultas en la base de datos y garantiza que solo
      * se puedan hidratar relaciones expresamente autorizadas por el desarrollador.
      *
-     * @param array<int, string> $includes Nombres de las relaciones autorizadas (ej: ['roles', 'profile'])
-     * @return self
+     * @param  array<int, string>  $includes  Nombres de las relaciones autorizadas (ej: ['roles', 'profile'])
      */
     public function allowedIncludes(array $includes): self
     {
         $this->config->allowedIncludes = $includes;
+
         return $this;
     }
 
@@ -165,12 +165,12 @@ final class ApiQueryBuilder
      *
      * Genera columnas virtuales (ej: comments_count) optimizadas en la misma consulta SQL.
      *
-     * @param array<int, string> $counts Nombres de las relaciones (ej: ['comments', 'orders'])
-     * @return self
+     * @param  array<int, string>  $counts  Nombres de las relaciones (ej: ['comments', 'orders'])
      */
     public function allowedCounts(array $counts): self
     {
         $this->config->allowedCounts = $counts;
+
         return $this;
     }
 
@@ -179,33 +179,32 @@ final class ApiQueryBuilder
      *
      * Soporta columnas directas de la tabla y campos relacionales autorizados (ej: 'roles.name').
      *
-     * @param array<int, string> $columns
-     * @return self
+     * @param  array<int, string>  $columns
      */
     public function allowedSearch(array $columns): self
     {
         $this->config->allowedSearch = $columns;
+
         return $this;
     }
 
     /**
      * Define las columnas de la tabla base autorizadas para ordenamiento (?sort=columna).
      *
-     * @param array<int, string> $sorts
-     * @return self
+     * @param  array<int, string>  $sorts
      */
     public function allowedSorts(array $sorts): self
     {
         $this->config->allowedSorts = $sorts;
+
         return $this;
     }
 
     /**
      * Sobrescribe la columna y dirección de ordenamiento por defecto para este endpoint específico.
      *
-     * @param string $column Columna base o columna con prefijo '-' para descendente (ej: '-created_at')
-     * @param string $direction Dirección opcional ('asc' o 'desc', ignorada si la columna tiene prefijo '-')
-     * @return self
+     * @param  string  $column  Columna base o columna con prefijo '-' para descendente (ej: '-created_at')
+     * @param  string  $direction  Dirección opcional ('asc' o 'desc', ignorada si la columna tiene prefijo '-')
      */
     public function defaultSort(string $column, string $direction = 'asc'): self
     {
@@ -229,8 +228,7 @@ final class ApiQueryBuilder
      * Por motivos de seguridad y estabilidad de la memoria (prevención de Out Of Memory / DoS),
      * este flag está desactivado por defecto en todos los endpoints.
      *
-     * @param int|bool $maxLimitOrUnlimited Límite máximo de seguridad o true para ilimitado
-     * @return self
+     * @param  int|bool  $maxLimitOrUnlimited  Límite máximo de seguridad o true para ilimitado
      */
     public function allowAll(int|bool $maxLimitOrUnlimited = 5000): self
     {
@@ -254,7 +252,7 @@ final class ApiQueryBuilder
      * - Si es paginación con Resource: JsonResource::collection($paginator)->response().
      * - Si es paginación sin Resource: JsonResponse con el objeto paginador estándar de Laravel.
      *
-     * @param string|null $resourceClass Clase JsonResource opcional (ej: UserResource::class)
+     * @param  string|null  $resourceClass  Clase JsonResource opcional (ej: UserResource::class)
      * @return JsonResponse Respuesta JSON lista para retornar en el controlador
      */
     public function response(?string $resourceClass = null): JsonResponse
@@ -284,8 +282,6 @@ final class ApiQueryBuilder
      * Ejecuta el pipeline completo y devuelve el resultado nativo (Paginator o Collection) para manipularlo en PHP.
      *
      * Útil cuando se requiere lógica adicional posterior a la consulta antes de construir la respuesta.
-     *
-     * @return LengthAwarePaginator|Paginator|CursorPaginator|Collection
      */
     public function get(): LengthAwarePaginator|Paginator|CursorPaginator|Collection
     {
@@ -317,8 +313,7 @@ final class ApiQueryBuilder
     /**
      * Alias semántico de get() enfocado en paginación estándar, permitiendo sobrescribir perPage inline.
      *
-     * @param int|null $perPage Cantidad de registros por página por defecto
-     * @return LengthAwarePaginator|Paginator|CursorPaginator|Collection
+     * @param  int|null  $perPage  Cantidad de registros por página por defecto
      */
     public function paginate(?int $perPage = null): LengthAwarePaginator|Paginator|CursorPaginator|Collection
     {

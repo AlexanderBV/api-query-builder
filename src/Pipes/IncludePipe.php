@@ -22,9 +22,9 @@ final class IncludePipe
     /**
      * Procesa la inclusión y conteo de relaciones en el Pipeline.
      *
-     * @param ProcessorContext $context Contexto de ejecución activo
-     * @param Closure(ProcessorContext): ProcessorContext $next Siguiente Pipe en la cadena
-     * @return ProcessorContext
+     * @param  ProcessorContext  $context  Contexto de ejecución activo
+     * @param  Closure(ProcessorContext): ProcessorContext  $next  Siguiente Pipe en la cadena
+     *
      * @throws ProcessorValidationException Si se solicita una relación o conteo no autorizado
      */
     public function handle(ProcessorContext $context, Closure $next): ProcessorContext
@@ -47,7 +47,7 @@ final class IncludePipe
                 }
 
                 // Verificación de Lista Blanca: la relación debe estar explícitamente en allowedIncludes
-                if (!in_array($relation, $context->config->allowedIncludes, true)) {
+                if (! in_array($relation, $context->config->allowedIncludes, true)) {
                     throw ProcessorValidationException::forField(
                         QueryParameter::INCLUDE,
                         "La relación '{$relation}' no está autorizada para inclusión."
@@ -58,7 +58,7 @@ final class IncludePipe
             }
 
             // Aplicar eager loading para hidratar las relaciones en una sola consulta adicional sin N+1
-            if (!empty($validIncludes)) {
+            if (! empty($validIncludes)) {
                 $context->builder->with($validIncludes);
             }
         }
@@ -81,7 +81,7 @@ final class IncludePipe
                 }
 
                 // Verificación de Lista Blanca: la relación debe estar explícitamente en allowedCounts
-                if (!in_array($countRel, $context->config->allowedCounts, true)) {
+                if (! in_array($countRel, $context->config->allowedCounts, true)) {
                     throw ProcessorValidationException::forField(
                         QueryParameter::COUNT,
                         "El conteo de la relación '{$countRel}' no está autorizado."
@@ -92,7 +92,7 @@ final class IncludePipe
             }
 
             // Aplicar withCount() para inyectar los atributos virtuales (ej: comments_count)
-            if (!empty($validCounts)) {
+            if (! empty($validCounts)) {
                 $context->builder->withCount($validCounts);
             }
         }

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Warrior\ApiQueryBuilder\Tests\Feature;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 use PHPUnit\Framework\Attributes\Test;
 use Warrior\ApiQueryBuilder\ApiQueryBuilder;
+use Warrior\ApiQueryBuilder\Tests\Fixtures\Models\Post;
 use Warrior\ApiQueryBuilder\Tests\Fixtures\Models\User;
 use Warrior\ApiQueryBuilder\Tests\TestCase;
 
@@ -121,7 +123,7 @@ final class AdvancedOperatorsTest extends TestCase
 
         $request = Request::create('/api/users', 'GET', [
             'filter' => [
-                'name'   => 'Alice',
+                'name' => 'Alice',
                 'status' => 'active',
             ],
         ]);
@@ -150,15 +152,15 @@ final class AdvancedOperatorsTest extends TestCase
 
         $request = Request::create('/api/users', 'GET', [
             'pagination' => 'simple',
-            'per_page'   => '3',
+            'per_page' => '3',
         ]);
 
         // when
         $paginator = ApiQueryBuilder::for(User::class, $request)->get();
 
         // then: simplePaginate() devuelve Illuminate\Pagination\Paginator, no LengthAwarePaginator
-        $this->assertInstanceOf(\Illuminate\Contracts\Pagination\Paginator::class, $paginator);
-        $this->assertNotInstanceOf(\Illuminate\Contracts\Pagination\LengthAwarePaginator::class, $paginator);
+        $this->assertInstanceOf(Paginator::class, $paginator);
+        $this->assertNotInstanceOf(LengthAwarePaginator::class, $paginator);
         $this->assertSame(3, $paginator->perPage());
     }
 
@@ -171,10 +173,10 @@ final class AdvancedOperatorsTest extends TestCase
     {
         // given
         $u1 = User::create(['name' => 'Alice', 'email' => 'a@test.com']);
-        \Warrior\ApiQueryBuilder\Tests\Fixtures\Models\Post::create(['user_id' => $u1->id, 'title' => 'Zebra Post']);
+        Post::create(['user_id' => $u1->id, 'title' => 'Zebra Post']);
 
         $u2 = User::create(['name' => 'Bob', 'email' => 'b@test.com']);
-        \Warrior\ApiQueryBuilder\Tests\Fixtures\Models\Post::create(['user_id' => $u2->id, 'title' => 'Apple Post']);
+        Post::create(['user_id' => $u2->id, 'title' => 'Apple Post']);
 
         $request = Request::create('/api/users', 'GET', [
             'sort' => 'latest_post_title',
@@ -182,7 +184,7 @@ final class AdvancedOperatorsTest extends TestCase
 
         // Base query con subselect explícito
         $baseQuery = User::query()->addSelect([
-            'latest_post_title' => \Warrior\ApiQueryBuilder\Tests\Fixtures\Models\Post::select('title')
+            'latest_post_title' => Post::select('title')
                 ->whereColumn('posts.user_id', 'users.id')
                 ->latest()
                 ->limit(1),

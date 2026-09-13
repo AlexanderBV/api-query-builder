@@ -18,7 +18,7 @@ final class User extends Model
 
     protected $casts = [
         'extra_data' => 'array',
-        'score'      => 'decimal:2',
+        'score' => 'decimal:2',
     ];
 
     public function roles(): BelongsToMany
@@ -43,8 +43,8 @@ final class User extends Model
     public function scopeTrashed(Builder $query, string $value): Builder
     {
         return match ($value) {
-            'with'  => $query->withTrashed(),
-            'only'  => $query->onlyTrashed(),
+            'with' => $query->withTrashed(),
+            'only' => $query->onlyTrashed(),
             default => $query->withoutTrashed(),
         };
     }

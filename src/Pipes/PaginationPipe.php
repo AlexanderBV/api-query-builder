@@ -22,9 +22,10 @@ final class PaginationPipe
     /**
      * Procesa la paginación o la colección completa en el Pipeline.
      *
-     * @param ProcessorContext $context Contexto de ejecución activo
-     * @param Closure(ProcessorContext): ProcessorContext $next Siguiente Pipe en la cadena
+     * @param  ProcessorContext  $context  Contexto de ejecución activo
+     * @param  Closure(ProcessorContext): ProcessorContext  $next  Siguiente Pipe en la cadena
      * @return ProcessorContext Contexto con el resultado inyectado (Paginator o Collection)
+     *
      * @throws ProcessorValidationException Si all=true no está autorizado, supera el límite o per_page es inválido
      */
     public function handle(ProcessorContext $context, Closure $next): ProcessorContext
@@ -48,7 +49,7 @@ final class PaginationPipe
 
             if ($isAll === true) {
                 // Verificación de Autorización: allowAll() debe haber sido habilitado explícitamente en el endpoint
-                if (!$context->config->allowAll) {
+                if (! $context->config->allowAll) {
                     throw ProcessorValidationException::forField(
                         QueryParameter::ALL,
                         'La recuperación total de registros (all=true) no está permitida para este recurso.'
@@ -66,6 +67,7 @@ final class PaginationPipe
 
                 // Hidratar la colección completa de Eloquent y continuar el pipeline
                 $collection = $context->builder->get();
+
                 return $next($context->withResult($collection));
             }
         }
@@ -79,7 +81,7 @@ final class PaginationPipe
         $perPage = $context->config->defaultPageSize;
 
         if ($rawPerPage !== null && $rawPerPage !== '') {
-            if (!is_numeric($rawPerPage)) {
+            if (! is_numeric($rawPerPage)) {
                 throw ProcessorValidationException::forField(
                     QueryParameter::PER_PAGE,
                     "El parámetro '{$perPageParam}' debe ser un número entero."
@@ -113,7 +115,7 @@ final class PaginationPipe
         $paginator = match ($modeEnum) {
             PaginationMode::SIMPLE => $context->builder->simplePaginate($perPage, ['*'], $pageParam, $pageNumber),
             PaginationMode::CURSOR => $context->builder->cursorPaginate($perPage),
-            PaginationMode::PAGE   => $context->builder->paginate($perPage, ['*'], $pageParam, $pageNumber),
+            PaginationMode::PAGE => $context->builder->paginate($perPage, ['*'], $pageParam, $pageNumber),
         };
 
         return $next($context->withResult($paginator));

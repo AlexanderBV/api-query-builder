@@ -33,9 +33,10 @@ final class FilterPipe
     /**
      * Procesa la etapa de filtros en el Pipeline de ejecución.
      *
-     * @param ProcessorContext $context Contexto de ejecución activo
-     * @param Closure(ProcessorContext): ProcessorContext $next Siguiente Pipe en la cadena
+     * @param  ProcessorContext  $context  Contexto de ejecución activo
+     * @param  Closure(ProcessorContext): ProcessorContext  $next  Siguiente Pipe en la cadena
      * @return ProcessorContext Contexto enriquecido tras aplicar los filtros
+     *
      * @throws ProcessorValidationException Si la estructura de filtros o algún operador es inválido
      */
     public function handle(ProcessorContext $context, Closure $next): ProcessorContext
@@ -45,7 +46,7 @@ final class FilterPipe
         $rawFilters = $context->request->query($filterParam, []);
 
         // Paso 2: Validar el tipo de dato recibido. Si no es un array, normalizar o rechazar con 422
-        if (!is_array($rawFilters)) {
+        if (! is_array($rawFilters)) {
             if ($rawFilters === '' || $rawFilters === null) {
                 $rawFilters = [];
             } else {
@@ -59,7 +60,7 @@ final class FilterPipe
         // Paso 3: Inyectar filtros por defecto configurados en el endpoint (defaultFilters)
         // Solo se aplican si la clave fue omitida por completo en la petición del cliente
         foreach ($context->config->defaultFilters as $defaultKey => $defaultValue) {
-            if (!array_key_exists($defaultKey, $rawFilters)) {
+            if (! array_key_exists($defaultKey, $rawFilters)) {
                 $rawFilters[$defaultKey] = $defaultValue;
             }
         }
@@ -81,10 +82,11 @@ final class FilterPipe
             $keyStr = (string) $key;
 
             // Si es un operador lógico ('and' / 'or') o un campo relacional ('roles.name'), va a filtros agrupados
-            if (!LogicalOperator::isLogical($keyStr) && !str_contains($keyStr, '.')) {
-                $scopeMethod = 'scope' . Str::studly($keyStr);
+            if (! LogicalOperator::isLogical($keyStr) && ! str_contains($keyStr, '.')) {
+                $scopeMethod = 'scope'.Str::studly($keyStr);
                 if (method_exists($model, $scopeMethod)) {
                     $rootScopes[$keyStr] = $value;
+
                     continue;
                 }
             }
@@ -100,9 +102,9 @@ final class FilterPipe
             }
 
             // Verificar si el scope está autorizado en la lista blanca de filtros
-            if (!$context->config->isFilterAllowed($field)) {
+            if (! $context->config->isFilterAllowed($field)) {
                 throw ProcessorValidationException::forField(
-                    QueryParameter::FILTER . ".{$field}",
+                    QueryParameter::FILTER.".{$field}",
                     "El filtro '{$field}' no está autorizado para este recurso."
                 );
             }
@@ -114,7 +116,7 @@ final class FilterPipe
 
         // Paso 7: Aplicar el resto de filtros dentro de una cláusula WHERE agrupada
         // Esto aísla las condiciones y preserva la integridad de cualquier scope global preexistente
-        if (!empty($otherFilters)) {
+        if (! empty($otherFilters)) {
             $context->builder->where(function (Builder $query) use ($otherFilters, $context): void {
                 $this->applyFilterNode($query, $otherFilters, LogicalOperator::AND, $context);
             });
@@ -126,11 +128,11 @@ final class FilterPipe
     /**
      * Aplica de forma recursiva un nodo del árbol de filtros (condiciones individuales o grupos lógicos AND/OR).
      *
-     * @param Builder $query Consulta o subconsulta Eloquent activa
-     * @param array<string, mixed> $node Mapa asociativo de condiciones o subgrupos
-     * @param string $boolean Conector lógico actual ('and' u 'or')
-     * @param ProcessorContext $context Contexto de ejecución
-     * @return void
+     * @param  Builder  $query  Consulta o subconsulta Eloquent activa
+     * @param  array<string, mixed>  $node  Mapa asociativo de condiciones o subgrupos
+     * @param  string  $boolean  Conector lógico actual ('and' u 'or')
+     * @param  ProcessorContext  $context  Contexto de ejecución
+     *
      * @throws ProcessorValidationException Si la sintaxis de un grupo lógico es incorrecta
      */
     private function applyFilterNode(Builder $query, array $node, string $boolean, ProcessorContext $context): void
@@ -146,9 +148,9 @@ final class FilterPipe
 
             // Paso 2: Evaluar si la clave es un grupo lógico ('and' u 'or') según SPEC-007
             if (LogicalOperator::isLogical($lowerKey)) {
-                if (!is_array($value)) {
+                if (! is_array($value)) {
                     throw ProcessorValidationException::forField(
-                        QueryParameter::FILTER . ".{$lowerKey}",
+                        QueryParameter::FILTER.".{$lowerKey}",
                         "El grupo lógico '{$lowerKey}' debe ser una lista de condiciones."
                     );
                 }
@@ -177,12 +179,10 @@ final class FilterPipe
     /**
      * Valida la lista blanca y aplica una condición individual sobre un campo o relación.
      *
-     * @param Builder $query
-     * @param string $field Nombre del campo (ej: 'name', 'status', 'roles.name')
-     * @param mixed $value Valor simple o mapa de operadores (ej: 'active', ['gte' => 100])
-     * @param string $boolean 'and' u 'or'
-     * @param ProcessorContext $context
-     * @return void
+     * @param  string  $field  Nombre del campo (ej: 'name', 'status', 'roles.name')
+     * @param  mixed  $value  Valor simple o mapa de operadores (ej: 'active', ['gte' => 100])
+     * @param  string  $boolean  'and' u 'or'
+     *
      * @throws ProcessorValidationException Si el campo no está en la lista blanca
      */
     private function applySingleFilter(
@@ -193,9 +193,9 @@ final class FilterPipe
         ProcessorContext $context
     ): void {
         // Paso 1: Verificación estricta de Lista Blanca
-        if (!$context->config->isFilterAllowed($field)) {
+        if (! $context->config->isFilterAllowed($field)) {
             throw ProcessorValidationException::forField(
-                QueryParameter::FILTER . ".{$field}",
+                QueryParameter::FILTER.".{$field}",
                 "El filtro '{$field}' no está autorizado para este recurso."
             );
         }
@@ -207,12 +207,13 @@ final class FilterPipe
             $query->{$method}(function (Builder $subQuery) use ($customFilter, $value): void {
                 $customFilter->apply($subQuery, $value);
             });
+
             return;
         }
 
         // Paso 3: Normalizar a mapa asociativo de operadores.
         // Si el cliente envió un valor escalar (?filter[status]=active), se asume igualdad (eq) por defecto.
-        $operators = is_array($value) && !array_is_list($value)
+        $operators = is_array($value) && ! array_is_list($value)
             ? $value
             : [Operator::EQUALS->value => $value];
 
@@ -229,14 +230,6 @@ final class FilterPipe
 
     /**
      * Enruta la aplicación de un operador hacia un Local Scope, una Relación, un campo JSON o columna directa.
-     *
-     * @param Builder $query
-     * @param string $field
-     * @param string $operator
-     * @param mixed $value
-     * @param string $boolean
-     * @param ProcessorContext $context
-     * @return void
      */
     private function applyOperatorToField(
         Builder $query,
@@ -249,14 +242,15 @@ final class FilterPipe
         $model = $query->getModel();
 
         // Caso A: Verificar si corresponde a un Local Scope del Modelo Eloquent (solo si no contiene punto)
-        if (!str_contains($field, '.')) {
-            $scopeMethod = 'scope' . Str::studly($field);
+        if (! str_contains($field, '.')) {
+            $scopeMethod = 'scope'.Str::studly($field);
             if (method_exists($model, $scopeMethod)) {
                 $method = $boolean === LogicalOperator::OR ? 'orWhere' : 'where';
                 $query->{$method}(function (Builder $subQuery) use ($field, $value): void {
                     $parsedValue = $this->parseBooleanIfApplicable($value);
                     $subQuery->{$field}($parsedValue);
                 });
+
                 return;
             }
         }
@@ -282,6 +276,7 @@ final class FilterPipe
                     $query->{$hasMethod}($relationName, function (Builder $relQuery) use ($nestedField, $operator, $value, $context): void {
                         $this->applyOperatorToField($relQuery, $nestedField, $operator, $value, LogicalOperator::AND, $context);
                     });
+
                     return;
                 }
             }
@@ -289,6 +284,7 @@ final class FilterPipe
             // Caso C: Atributo anidado en columna JSON: transformar 'extra_data.client.code' a 'extra_data->client->code'
             $jsonField = str_replace('.', '->', $field);
             $this->applySqlPredicate($query, $jsonField, $operator, $value, $boolean);
+
             return;
         }
 
@@ -299,12 +295,11 @@ final class FilterPipe
     /**
      * Aplica el predicado SQL específico sobre el Builder utilizando el catálogo tipado de operadores.
      *
-     * @param Builder $query
-     * @param string $column Nombre de la columna o ruta JSON
-     * @param string $operator Nombre del operador textual (ej: 'eq', 'gte', 'in')
-     * @param mixed $value Valor o lista de valores del filtro
-     * @param string $boolean Conector lógico ('and' u 'or')
-     * @return void
+     * @param  string  $column  Nombre de la columna o ruta JSON
+     * @param  string  $operator  Nombre del operador textual (ej: 'eq', 'gte', 'in')
+     * @param  mixed  $value  Valor o lista de valores del filtro
+     * @param  string  $boolean  Conector lógico ('and' u 'or')
+     *
      * @throws ProcessorValidationException Si el operador no existe o no tiene los argumentos requeridos
      */
     private function applySqlPredicate(
@@ -319,7 +314,7 @@ final class FilterPipe
 
         if ($operatorEnum === null) {
             throw ProcessorValidationException::forField(
-                QueryParameter::FILTER . ".{$column}.{$operator}",
+                QueryParameter::FILTER.".{$column}.{$operator}",
                 "El operador '{$operator}' no es compatible o no está soportado."
             );
         }
@@ -376,7 +371,7 @@ final class FilterPipe
                 $range = $this->normalizeList($value);
                 if (count($range) < 2) {
                     throw ProcessorValidationException::forField(
-                        QueryParameter::FILTER . ".{$column}.between",
+                        QueryParameter::FILTER.".{$column}.between",
                         "El operador 'between' requiere exactamente dos valores."
                     );
                 }
@@ -390,7 +385,7 @@ final class FilterPipe
                 $range = $this->normalizeList($value);
                 if (count($range) < 2) {
                     throw ProcessorValidationException::forField(
-                        QueryParameter::FILTER . ".{$column}.not_between",
+                        QueryParameter::FILTER.".{$column}.not_between",
                         "El operador 'not_between' requiere dos valores."
                     );
                 }
@@ -406,8 +401,8 @@ final class FilterPipe
 
             // No contiene texto (NOT LIKE %valor%)
             Operator::NOT_CONTAINS => $isOr
-                ? $query->orWhere($column, 'NOT ' . $likeOp, "%{$value}%")
-                : $query->where($column, 'NOT ' . $likeOp, "%{$value}%"),
+                ? $query->orWhere($column, 'NOT '.$likeOp, "%{$value}%")
+                : $query->where($column, 'NOT '.$likeOp, "%{$value}%"),
 
             // Comienza con texto (valor%)
             Operator::STARTS_WITH => $isOr
@@ -416,8 +411,8 @@ final class FilterPipe
 
             // No comienza con texto (NOT LIKE valor%)
             Operator::NOT_STARTS_WITH => $isOr
-                ? $query->orWhere($column, 'NOT ' . $likeOp, "{$value}%")
-                : $query->where($column, 'NOT ' . $likeOp, "{$value}%"),
+                ? $query->orWhere($column, 'NOT '.$likeOp, "{$value}%")
+                : $query->where($column, 'NOT '.$likeOp, "{$value}%"),
 
             // Termina con texto (%valor)
             Operator::ENDS_WITH => $isOr
@@ -426,8 +421,8 @@ final class FilterPipe
 
             // No termina con texto (NOT LIKE %valor)
             Operator::NOT_ENDS_WITH => $isOr
-                ? $query->orWhere($column, 'NOT ' . $likeOp, "%{$value}")
-                : $query->where($column, 'NOT ' . $likeOp, "%{$value}"),
+                ? $query->orWhere($column, 'NOT '.$likeOp, "%{$value}")
+                : $query->where($column, 'NOT '.$likeOp, "%{$value}"),
 
             // Comprobación de campo nulo (IS NULL)
             Operator::IS_NULL => $isOr
@@ -459,7 +454,7 @@ final class FilterPipe
                 $dates = $this->normalizeList($value);
                 if (count($dates) < 2) {
                     throw ProcessorValidationException::forField(
-                        QueryParameter::FILTER . ".{$column}.date_between",
+                        QueryParameter::FILTER.".{$column}.date_between",
                         "El operador 'date_between' requiere dos fechas."
                     );
                 }
@@ -480,7 +475,7 @@ final class FilterPipe
     /**
      * Normaliza una entrada de lista: si es un string separado por comas ('a,b'), lo transforma en array ['a', 'b'].
      *
-     * @param mixed $value Valor enviado por el cliente
+     * @param  mixed  $value  Valor enviado por el cliente
      * @return array<int, mixed> Lista indexada y limpia de elementos
      */
     private function normalizeList(mixed $value): array
@@ -501,7 +496,6 @@ final class FilterPipe
     /**
      * Convierte cadenas con literales booleanos ('true', 'false', '1', '0') a tipos booleanos nativos de PHP.
      *
-     * @param mixed $value
      * @return mixed El booleano evaluado o el valor original si no corresponde
      */
     private function parseBooleanIfApplicable(mixed $value): mixed

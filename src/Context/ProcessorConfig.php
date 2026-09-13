@@ -18,19 +18,19 @@ use Warrior\ApiQueryBuilder\Filters\CustomFilter;
 final class ProcessorConfig
 {
     /**
-     * @param array<int|string, string|CustomFilter> $allowedFilters Filtros autorizados (columnas, comodines, CustomFilter)
-     * @param array<string, mixed> $defaultFilters Filtros por defecto a nivel HTTP si el cliente no envía valor
-     * @param array<int, string> $allowedIncludes Relaciones autorizadas para Eager Loading (with)
-     * @param array<int, string> $allowedCounts Relaciones autorizadas para conteos agregados (withCount)
-     * @param array<int, string> $allowedSearch Columnas de texto habilitadas para búsqueda global concurrente
-     * @param array<int, string> $allowedSorts Columnas de la tabla base autorizadas para ordenar
-     * @param string $defaultSortColumn Columna de ordenamiento por defecto cuando se omite ?sort
-     * @param string $defaultSortDirection Dirección por defecto ('asc' o 'desc')
-     * @param bool $allowAll Si la recuperación total sin paginar (?all=true) está habilitada en el endpoint
-     * @param int $maxAllLimit Límite de seguridad anti-OOM para la recuperación total
-     * @param int $defaultPageSize Tamaño de página por defecto en paginación estándar
-     * @param int $maxPageSize Tamaño máximo permitido por página (?per_page)
-     * @param array<string, string> $parameterNames Mapeo de nombres de query string (QueryParameter::defaults())
+     * @param  array<int|string, string|CustomFilter>  $allowedFilters  Filtros autorizados (columnas, comodines, CustomFilter)
+     * @param  array<string, mixed>  $defaultFilters  Filtros por defecto a nivel HTTP si el cliente no envía valor
+     * @param  array<int, string>  $allowedIncludes  Relaciones autorizadas para Eager Loading (with)
+     * @param  array<int, string>  $allowedCounts  Relaciones autorizadas para conteos agregados (withCount)
+     * @param  array<int, string>  $allowedSearch  Columnas de texto habilitadas para búsqueda global concurrente
+     * @param  array<int, string>  $allowedSorts  Columnas de la tabla base autorizadas para ordenar
+     * @param  string  $defaultSortColumn  Columna de ordenamiento por defecto cuando se omite ?sort
+     * @param  string  $defaultSortDirection  Dirección por defecto ('asc' o 'desc')
+     * @param  bool  $allowAll  Si la recuperación total sin paginar (?all=true) está habilitada en el endpoint
+     * @param  int  $maxAllLimit  Límite de seguridad anti-OOM para la recuperación total
+     * @param  int  $defaultPageSize  Tamaño de página por defecto en paginación estándar
+     * @param  int  $maxPageSize  Tamaño máximo permitido por página (?per_page)
+     * @param  array<string, string>  $parameterNames  Mapeo de nombres de query string (QueryParameter::defaults())
      */
     public function __construct(
         public array $allowedFilters = [],
@@ -59,7 +59,7 @@ final class ProcessorConfig
      * Permite desacoplar los nombres en el código interno (ej: QueryParameter::FILTER)
      * de las claves públicas configuradas en el archivo de configuración o a nivel de API.
      *
-     * @param string $key Clave interna (ej: 'filter', 'sort', 'all')
+     * @param  string  $key  Clave interna (ej: 'filter', 'sort', 'all')
      * @return string Nombre real esperado en la URL
      */
     public function param(string $key): string
@@ -76,7 +76,7 @@ final class ProcessorConfig
      * 3. Comodín de prefijo ('prefijo.*'): Autoriza cualquier subcampo que comience con 'prefijo.',
      *    muy útil para relaciones ('roles.*') o campos JSON ('extra_data.*').
      *
-     * @param string $filterName Nombre del filtro solicitado (ej: 'status', 'roles.name', 'extra_data.client.code')
+     * @param  string  $filterName  Nombre del filtro solicitado (ej: 'status', 'roles.name', 'extra_data.client.code')
      * @return bool True si el filtro está explícitamente en la lista blanca
      */
     public function isFilterAllowed(string $filterName): bool
@@ -87,7 +87,7 @@ final class ProcessorConfig
             $allowedName = $allowed instanceof CustomFilter ? $allowed->name : (string) $allowed;
 
             // Paso 1: Si hay un comodín global '*' y el filtro no contiene punto (columna directa), autorizar
-            if ($allowedName === '*' && !str_contains($filterName, '.')) {
+            if ($allowedName === '*' && ! str_contains($filterName, '.')) {
                 return true;
             }
 
@@ -99,7 +99,7 @@ final class ProcessorConfig
             // Paso 3: Soporte para comodines jerárquicos con notación de punto (ej: 'roles.*' o 'metadata.*')
             if (str_ends_with($allowedName, '.*')) {
                 $prefix = substr($allowedName, 0, -2);
-                if (str_starts_with($filterName, $prefix . '.')) {
+                if (str_starts_with($filterName, $prefix.'.')) {
                     return true;
                 }
             }
@@ -115,7 +115,7 @@ final class ProcessorConfig
      * Permite que el FilterPipe delegue la construcción de la subconsulta al callback
      * personalizado registrado por el desarrollador en el controlador.
      *
-     * @param string $name Nombre del filtro personalizado
+     * @param  string  $name  Nombre del filtro personalizado
      * @return CustomFilter|null La instancia encontrada o null si es un filtro de columna normal
      */
     public function getCustomFilter(string $name): ?CustomFilter

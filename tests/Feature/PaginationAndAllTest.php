@@ -30,7 +30,7 @@ final class PaginationAndAllTest extends TestCase
 
         $request = Request::create('/api/users', 'GET', [
             'per_page' => '5',
-            'page'     => '2',
+            'page' => '2',
         ]);
 
         // when

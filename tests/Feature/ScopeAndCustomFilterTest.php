@@ -7,8 +7,8 @@ namespace Warrior\ApiQueryBuilder\Tests\Feature;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use PHPUnit\Framework\Attributes\Test;
-use Warrior\ApiQueryBuilder\Filters\Filter;
 use Warrior\ApiQueryBuilder\ApiQueryBuilder;
+use Warrior\ApiQueryBuilder\Filters\Filter;
 use Warrior\ApiQueryBuilder\Tests\Fixtures\Models\User;
 use Warrior\ApiQueryBuilder\Tests\TestCase;
 

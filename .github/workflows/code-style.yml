@@ -40,8 +40,8 @@ jobs:
           extensions: mbstring
           coverage: none
 
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction
+
       - name: Run Laravel Pint
-        uses: aglipanci/laravel-pint-action@2.4
-        with:
-          preset: laravel
-          testMode: true
+        run: vendor/bin/pint --test

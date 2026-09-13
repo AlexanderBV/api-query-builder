@@ -30,7 +30,7 @@ return [
     |
     */
     'sort' => [
-        'default_column'    => 'id',
+        'default_column' => 'id',
         'default_direction' => SortDirection::DESC->value,
     ],
 
@@ -45,7 +45,7 @@ return [
     */
     'pagination' => [
         'default_size' => 15,
-        'max_size'     => 100,
+        'max_size' => 100,
     ],
 
     /*
@@ -60,7 +60,7 @@ return [
     */
     'all' => [
         'enabled_by_default' => false,
-        'max_limit'          => 5000,
+        'max_limit' => 5000,
     ],
 
 ];

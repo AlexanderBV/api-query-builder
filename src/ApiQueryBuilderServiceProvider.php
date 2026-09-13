@@ -19,28 +19,24 @@ final class ApiQueryBuilderServiceProvider extends ServiceProvider
 {
     /**
      * Registra los servicios y fusiones de configuración del paquete.
-     *
-     * @return void
      */
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/api-query-builder.php',
+            __DIR__.'/../config/api-query-builder.php',
             'api-query-builder'
         );
     }
 
     /**
      * Ejecuta el arranque de servicios y el registro de Macros de Eloquent.
-     *
-     * @return void
      */
     public function boot(): void
     {
         // Publicar archivo de configuración
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/api-query-builder.php' => config_path('api-query-builder.php'),
+                __DIR__.'/../config/api-query-builder.php' => config_path('api-query-builder.php'),
             ], 'api-query-builder-config');
         }
 

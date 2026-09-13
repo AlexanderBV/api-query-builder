@@ -28,9 +28,9 @@ final class SearchPipe
     /**
      * Procesa el término de búsqueda global en el Pipeline.
      *
-     * @param ProcessorContext $context Contexto de ejecución activo
-     * @param Closure(ProcessorContext): ProcessorContext $next Siguiente Pipe en la cadena
-     * @return ProcessorContext
+     * @param  ProcessorContext  $context  Contexto de ejecución activo
+     * @param  Closure(ProcessorContext): ProcessorContext  $next  Siguiente Pipe en la cadena
+     *
      * @throws ProcessorValidationException Si la búsqueda no está configurada o excede los límites
      */
     public function handle(ProcessorContext $context, Closure $next): ProcessorContext

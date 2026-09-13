@@ -50,15 +50,15 @@ final class QueryParameter
     public static function defaults(): array
     {
         return [
-            self::FILTER     => self::FILTER,
-            self::SEARCH     => self::SEARCH,
-            self::SORT       => self::SORT,
-            self::INCLUDE    => self::INCLUDE,
-            self::COUNT      => self::COUNT,
-            self::ALL        => self::ALL,
-            self::PAGE       => self::PAGE,
-            self::PER_PAGE   => self::PER_PAGE,
-            self::CURSOR     => self::CURSOR,
+            self::FILTER => self::FILTER,
+            self::SEARCH => self::SEARCH,
+            self::SORT => self::SORT,
+            self::INCLUDE => self::INCLUDE,
+            self::COUNT => self::COUNT,
+            self::ALL => self::ALL,
+            self::PAGE => self::PAGE,
+            self::PER_PAGE => self::PER_PAGE,
+            self::CURSOR => self::CURSOR,
             self::PAGINATION => self::PAGINATION,
         ];
     }

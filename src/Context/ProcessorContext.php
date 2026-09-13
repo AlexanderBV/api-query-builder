@@ -13,10 +13,10 @@ use Illuminate\Http\Request;
 final class ProcessorContext
 {
     /**
-     * @param Builder $builder Instancia activa del Query Builder de Eloquent
-     * @param Request $request Petición HTTP que contiene los query params
-     * @param ProcessorConfig $config Reglas y opciones autorizadas
-     * @param mixed $result Resultado resuelto por el PaginationPipe (Paginator o Collection)
+     * @param  Builder  $builder  Instancia activa del Query Builder de Eloquent
+     * @param  Request  $request  Petición HTTP que contiene los query params
+     * @param  ProcessorConfig  $config  Reglas y opciones autorizadas
+     * @param  mixed  $result  Resultado resuelto por el PaginationPipe (Paginator o Collection)
      */
     public function __construct(
         public Builder $builder,
@@ -27,9 +27,6 @@ final class ProcessorContext
 
     /**
      * Clona el contexto con un nuevo resultado resuelto.
-     *
-     * @param mixed $result
-     * @return self
      */
     public function withResult(mixed $result): self
     {

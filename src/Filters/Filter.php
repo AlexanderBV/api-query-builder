@@ -21,9 +21,8 @@ final class Filter
      * })
      * ```
      *
-     * @param string $name Nombre del filtro público en la URL (ej: 'has_active_subscription')
-     * @param Closure $callback Función que recibe ($query, $value, $name)
-     * @return CustomFilter
+     * @param  string  $name  Nombre del filtro público en la URL (ej: 'has_active_subscription')
+     * @param  Closure  $callback  Función que recibe ($query, $value, $name)
      */
     public static function custom(string $name, Closure $callback): CustomFilter
     {

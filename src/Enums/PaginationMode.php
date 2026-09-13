@@ -20,9 +20,6 @@ enum PaginationMode: string
 
     /**
      * Parsea un string al modo correspondiente, retornando PAGE por defecto.
-     *
-     * @param string|null $mode
-     * @return self
      */
     public static function fromString(?string $mode): self
     {

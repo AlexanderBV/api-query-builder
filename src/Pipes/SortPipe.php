@@ -22,9 +22,9 @@ final class SortPipe
     /**
      * Procesa la etapa de ordenamiento en el Pipeline de ejecución.
      *
-     * @param ProcessorContext $context Contexto de ejecución activo
-     * @param Closure(ProcessorContext): ProcessorContext $next Siguiente Pipe en la cadena
-     * @return ProcessorContext
+     * @param  ProcessorContext  $context  Contexto de ejecución activo
+     * @param  Closure(ProcessorContext): ProcessorContext  $next  Siguiente Pipe en la cadena
+     *
      * @throws ProcessorValidationException Si se solicita una columna no permitida o un ordenamiento relacional
      */
     public function handle(ProcessorContext $context, Closure $next): ProcessorContext
@@ -60,7 +60,7 @@ final class SortPipe
                 }
 
                 // Paso 5: Verificación de Lista Blanca: el campo debe estar explícitamente en allowedSorts
-                if (!in_array($column, $context->config->allowedSorts, true)) {
+                if (! in_array($column, $context->config->allowedSorts, true)) {
                     throw ProcessorValidationException::forField(
                         QueryParameter::SORT,
                         "El campo '{$column}' no está autorizado para ordenamiento."
@@ -86,7 +86,7 @@ final class SortPipe
         // Garantiza que dos registros con idéntico valor en el campo ordenado siempre aparezcan
         // en la misma página de resultados independientemente del motor SQL subyacente.
         $primaryKey = $context->builder->getModel()->getKeyName();
-        if ($primaryKey && !in_array($primaryKey, $appliedColumns, true)) {
+        if ($primaryKey && ! in_array($primaryKey, $appliedColumns, true)) {
             $context->builder->orderBy($primaryKey, SortDirection::DESC->value);
         }
 

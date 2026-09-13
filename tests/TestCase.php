@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Warrior\ApiQueryBuilder\Tests;
 
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -15,7 +16,7 @@ abstract class TestCase extends BaseTestCase
     use RefreshDatabase;
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param  Application  $app
      * @return array<int, class-string>
      */
     protected function getPackageProviders($app): array
@@ -27,8 +28,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Define el esquema de base de datos para los fixtures de prueba en SQLite.
-     *
-     * @return void
      */
     protected function defineDatabaseMigrations(): void
     {

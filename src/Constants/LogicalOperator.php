@@ -19,13 +19,11 @@ final class LogicalOperator
 
     /**
      * Determina si una clave corresponde a un operador lógico de grupo.
-     *
-     * @param string $key
-     * @return bool
      */
     public static function isLogical(string $key): bool
     {
         $lower = strtolower($key);
+
         return $lower === self::AND || $lower === self::OR;
     }
 }

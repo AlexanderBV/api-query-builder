@@ -49,9 +49,6 @@ enum Operator: string
 
     /**
      * Intenta resolver una cadena a un operador de forma case-insensitive.
-     *
-     * @param string $operator
-     * @return self|null
      */
     public static function tryFromString(string $operator): ?self
     {

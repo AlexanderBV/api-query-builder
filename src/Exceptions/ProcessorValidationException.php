@@ -18,9 +18,8 @@ final class ProcessorValidationException extends ValidationException
     /**
      * Crea una instancia de excepción a partir de un mensaje específico para un campo.
      *
-     * @param string $field Clave o parámetro infractor (ej: 'filter.status', 'sort', 'all')
-     * @param string $message Descripción amigable del error
-     * @return self
+     * @param  string  $field  Clave o parámetro infractor (ej: 'filter.status', 'sort', 'all')
+     * @param  string  $message  Descripción amigable del error
      */
     public static function forField(string $field, string $message): self
     {

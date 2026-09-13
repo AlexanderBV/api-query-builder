@@ -16,8 +16,8 @@ use Illuminate\Database\Eloquent\Builder;
 final class CustomFilter
 {
     /**
-     * @param string $name Nombre público del filtro (ej: 'has_active_subscription')
-     * @param Closure $callback Función que recibe ($query, $value, $name)
+     * @param  string  $name  Nombre público del filtro (ej: 'has_active_subscription')
+     * @param  Closure  $callback  Función que recibe ($query, $value, $name)
      */
     public function __construct(
         public readonly string $name,
@@ -26,10 +26,6 @@ final class CustomFilter
 
     /**
      * Aplica la lógica del filtro personalizado sobre el query builder.
-     *
-     * @param Builder $query
-     * @param mixed $value
-     * @return void
      */
     public function apply(Builder $query, mixed $value): void
     {

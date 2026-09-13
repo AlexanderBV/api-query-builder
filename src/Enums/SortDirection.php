@@ -17,10 +17,6 @@ enum SortDirection: string
 
     /**
      * Parsea un valor de cadena a una instancia de SortDirection válida con fallback.
-     *
-     * @param string|null $value
-     * @param SortDirection $default
-     * @return self
      */
     public static function fromString(?string $value, self $default = self::ASC): self
     {

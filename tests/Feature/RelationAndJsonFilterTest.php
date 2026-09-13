@@ -79,14 +79,14 @@ final class RelationAndJsonFilterTest extends TestCase
     {
         // given
         User::create([
-            'name'       => 'Alice',
-            'email'      => 'alice@test.com',
+            'name' => 'Alice',
+            'email' => 'alice@test.com',
             'extra_data' => ['settings' => ['theme' => 'dark']],
         ]);
 
         $noisyUser = User::create([
-            'name'       => 'Bob',
-            'email'      => 'bob@test.com',
+            'name' => 'Bob',
+            'email' => 'bob@test.com',
             'extra_data' => ['settings' => ['theme' => 'light']],
         ]);
 
